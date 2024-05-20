@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use App\Mail\NewUserMail;
 
 class UserController extends Controller
 {
@@ -43,6 +44,8 @@ class UserController extends Controller
             'otp_code' => $otp, 
         ]);
         
+        Mail::to('ja.melgazo@mlgcl.edu.ph')->send(new NewUserMail());
+
         } catch (\Exception $sms) {
         return response()->json([
             'status' =>false,

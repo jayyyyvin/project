@@ -6,7 +6,7 @@
     <title>List User</title>
     <link rel="stylesheet" href="dashboard/dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="assets/sweetalert/sweetalert.min.js"></script>
     <script>
         const token = localStorage.getItem('token');
 
@@ -117,6 +117,6 @@ for(let i = 0; i < data.length; i++)
 
     
 </script>
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="assets/sweetalert/sweetalert.min.js"></script>
 </body>
 </html>

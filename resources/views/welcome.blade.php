@@ -82,6 +82,7 @@
                 });
             });
 
+            
             // Handle OTP form submission
             document.getElementById('otpFormElement').addEventListener('submit', function(event) {
                 event.preventDefault();
@@ -108,6 +109,7 @@
                 })
                 .then(res => {
                     if(res.status) {
+                        console.log(res.message);
                         localStorage.setItem('token', res.token);
                         window.location.href = '/home';
                     } else {
