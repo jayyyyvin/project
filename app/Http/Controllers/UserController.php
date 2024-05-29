@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use App\Mail\NewUserMail;
+use Illuminate\Support\Facades\Http;
 
 class UserController extends Controller
 {
@@ -33,18 +35,19 @@ class UserController extends Controller
         $user->save();
 
 
-        // Http::withoutVerifying()->post(env('SEMAPHORE_API_URL'), [
-        //         'apikey' => env('SEMAPHORE_API_KEY'),
-        //         'number' => env('SEMAPHORE_API_NUMBER'),
-        //         'message' => 'Your OTP code is: ' . $otp
-        //     ]);
+        Http::withoutVerifying()->post(env('SEMAPHORE_API_URL'), [
+                'apikey' => env('SEMAPHORE_API_KEY'),
+                'number' => env('SEMAPHORE_API_NUMBER'),
+                'message' => 'Your OTP code is: ' . $otp
+            ]);
 
         return response()->json([
             'message' => 'OTP sent successfully',
             'otp_code' => $otp, 
         ]);
         
-        Mail::to('ja.melgazo@mlgcl.edu.ph')->send(new NewUserMail());
+        
+       
 
         } catch (\Exception $sms) {
         return response()->json([
@@ -80,4 +83,28 @@ class UserController extends Controller
         return User::limit(10)->orderBy('id', 'desc')->get();
     }
     
+    public function store(Request $request)
+    {
+
+        $user = new User();
+
+        $user->name = $request->input('name');
+        $user->email = $request->input('email');
+        $user->password = bcrypt($request->input('password'));
+        $password = $request->input('password');
+        // if ($request->hasFile('avatar')) {
+        //     $avatarPath = $request->file('avatar')->store('avatars', 'public');
+        //     $user->avatar = $avatarPath;
+        // }
+
+        $user->save();
+        
+        //the email show dire
+        Mail::to($user->email)->send(new NewUserMail($user, $password));
+       
+        return response()->json([
+            'message' => 'Create User Successfully',
+            'status' => true,
+        ]);
+    }
 }

@@ -6,6 +6,11 @@
     <title>Document</title>
 </head>
 <body>
-<h1>First Time</h1>
+<div class="content">
+                        <h3>Email:</h3>
+                        <p>{{ $email }}</p>
+                        <h3>Password:</h3>
+                        <p>{{ $password }}</p>
+                    </div>
 </body>
 </html>

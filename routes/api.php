@@ -23,3 +23,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/login', [UserController::class, 'login']);
 Route::post('/verify', [UserController::class, 'verifyOTP']);
 Route::get('/users', [UserController::class, 'users']);
+Route::post('/create', [UserController::class, 'store']);
+

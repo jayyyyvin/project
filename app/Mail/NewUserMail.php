@@ -17,9 +17,12 @@ class NewUserMail extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct()
-    {
-        //
+    public $user,$password;
+
+    public function __construct(User $user,$password)
+    {// //
+        $this->user = $user;
+        $this->password = $password;
     }
 
     /**
@@ -38,13 +41,12 @@ class NewUserMail extends Mailable
 
      
     public function content(): Content
-    {
-        $users = User::all();
-
+    {   
         return new Content(
             view: 'mail.UserMail',
             with: [
-                'credentials' => $users,
+                'email' => $this->user->email,
+                'password' => $this->user->password,
             ]
         );
     }
