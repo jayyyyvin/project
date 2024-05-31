@@ -22,6 +22,7 @@ Route::get('dashboard', [HomeController::class, 'index']);
 Route::get('/home', [HomeController::class, 'home']);
 Route::get('/create-user', [HomeController::class, 'createUser']);
 Route::get('/showuser', [HomeController::class, 'showUser']);
+Route::get('/edituser/{id}', [HomeController::class, 'editUser']);
 
 
 

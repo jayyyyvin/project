@@ -99,7 +99,7 @@ class UserController extends Controller
 
         $user->save();
         
-        //the email show dire
+        //the email show adtos mailtrap
         Mail::to($user->email)->send(new NewUserMail($user, $password));
        
         return response()->json([
@@ -107,4 +107,47 @@ class UserController extends Controller
             'status' => true,
         ]);
     }
+    public function destroy(string $id)
+    {
+        $user = User::findOrFail($id);
+
+        $user->delete();
+        
+        return response()->json([
+            'message' => 'Delete User Successfully',
+            'status' => true,
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $users = User::findOrFail($id);
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email,' . $users->id,
+            'password' => 'required|string|max:255',
+            
+        ]);
+
+        $users->name = $request->input('name');
+        $users->email = $request->input('email');
+        $users->password = $request->input('password');
+        
+        $users->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Edit User Successfully',
+        ]);
+    }
+
+    public function getUser(string $id)
+    {
+        $user = User::findOrFail($id);
+
+        return response()->json($user);
+    }
+
+
 }

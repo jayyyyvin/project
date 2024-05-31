@@ -18,12 +18,15 @@ class HomeController extends Controller
 
     public function createUser()
     {
-        return view('create-user');
+        return view('show.create-user');
     }
     public function showUser()
     {
         return view('show.showuser');
     }
-
+    public function editUser()
+    {
+        return view('show.edituser');
+    }
 
 }
