@@ -11,6 +11,10 @@
             <div class="card-body">
                 <form id="editUserForm">
                     <div class="form-group">
+                        <label for="avatar">Profile Image</label>
+                        <input type="file" class="form-control" id="avatar" name="avatar" placeholder="Enter Profile" required>
+                    </div>
+                    <div class="form-group">
                         <label for="name">Name</label>
                         <input type="text" class="form-control" id="name" name="name" placeholder="Enter name" required>
                     </div>

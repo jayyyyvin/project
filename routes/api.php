@@ -27,6 +27,7 @@ Route::post('/create', [UserController::class, 'store']);
 Route::delete('delete/{id}', [UserController::class, 'destroy']);
 Route::post('update/{id}', [UserController::class, 'update']);
 Route::get('getUser/{id}', [UserController::class, 'getUser']);
+Route::get('/myUser',[UserController::class, 'profile'])->middleware('auth:sanctum');
 
 
 

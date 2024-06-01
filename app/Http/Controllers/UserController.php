@@ -13,53 +13,45 @@ class UserController extends Controller
 {
     public function login(Request $request)
     {
-        try{
-        $user = User::where('email', $request->email)->first();
+        try {
+            $user = User::where('email', $request->email)->first();
 
-        if(empty($user))
-        {
-            return response()->json([
-                'message' => '404 not found'
-            ]);
-        }
+            if (empty($user)) {
+                return response()->json([
+                    'message' => '404 not found'
+                ]);
+            }
 
-        if(!Hash::check($request->password, $user->password))
-        {
-            return response()->json([
-                'message' => 'Invalid Credentials'
-            ], 404);
-        }
+            if (!Hash::check($request->password, $user->password)) {
+                return response()->json([
+                    'message' => 'Invalid Credentials'
+                ], 404);
+            }
 
-        $otp = rand(100000, 999999);
-        $user->otp_code = Hash::make($otp);
-        $user->save();
+            $otp = rand(100000, 999999);
+            $user->otp_code = Hash::make($otp);
+            $user->save();
 
-
-        Http::withoutVerifying()->post(env('SEMAPHORE_API_URL'), [
+            Http::withoutVerifying()->post(env('SEMAPHORE_API_URL'), [
                 'apikey' => env('SEMAPHORE_API_KEY'),
                 'number' => env('SEMAPHORE_API_NUMBER'),
                 'message' => 'Your OTP code is: ' . $otp
             ]);
 
-        return response()->json([
-            'message' => 'OTP sent successfully',
-            'otp_code' => $otp, 
-        ]);
-        
-        
-       
-
+            return response()->json([
+                'message' => 'OTP sent successfully',
+                'otp_code' => $otp,
+            ]);
         } catch (\Exception $sms) {
-        return response()->json([
-            'status' =>false,
-            'message' => 'There is an Error: ' . $sms->getMessage()
-        ], 500);
-    }
+            return response()->json([
+                'status' => false,
+                'message' => 'There is an Error: ' . $sms->getMessage()
+            ], 500);
+        }
     }
 
     public function verifyOTP(Request $request)
     {
-     
         $request->validate([
             'otp_code' => 'required',
         ]);
@@ -73,46 +65,46 @@ class UserController extends Controller
 
         return response()->json([
             'status' => true,
-            'message' => 'Login Successfull',
+            'message' => 'Login Successful',
             'token' => $user->createToken('token')->plainTextToken
         ]);
     }
 
     public function users()
     {
-        return User::limit(10)->orderBy('id', 'desc')->get();
+        return User::orderBy('id', 'desc')->get();
     }
-    
+
     public function store(Request $request)
     {
-
         $user = new User();
 
         $user->name = $request->input('name');
         $user->email = $request->input('email');
         $user->password = bcrypt($request->input('password'));
         $password = $request->input('password');
-        // if ($request->hasFile('avatar')) {
-        //     $avatarPath = $request->file('avatar')->store('avatars', 'public');
-        //     $user->avatar = $avatarPath;
-        // }
+
+        if ($request->hasFile('avatar')) {
+            $avatarPath = $request->file('avatar')->store('avatars', 'public');
+            $user->avatar = $avatarPath;
+        }
 
         $user->save();
-        
-        //the email show adtos mailtrap
+
         Mail::to($user->email)->send(new NewUserMail($user, $password));
-       
+
         return response()->json([
             'message' => 'Create User Successfully',
             'status' => true,
         ]);
     }
+
     public function destroy(string $id)
     {
         $user = User::findOrFail($id);
 
         $user->delete();
-        
+
         return response()->json([
             'message' => 'Delete User Successfully',
             'status' => true,
@@ -127,13 +119,17 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email,' . $users->id,
             'password' => 'required|string|max:255',
-            
         ]);
 
         $users->name = $request->input('name');
         $users->email = $request->input('email');
-        $users->password = $request->input('password');
-        
+        $users->password = bcrypt($request->input('password'));
+
+        if ($request->hasFile('avatar')) {
+            $avatarPath = $request->file('avatar')->store('avatars', 'public');
+            $users->avatar = $avatarPath;
+        }
+
         $users->save();
 
         return response()->json([
@@ -149,5 +145,10 @@ class UserController extends Controller
         return response()->json($user);
     }
 
-
+    public function profile(Request $request)
+    {
+        return response()->json($request->user());
+    }
 }
+
+    

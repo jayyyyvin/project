@@ -28,5 +28,9 @@ class HomeController extends Controller
     {
         return view('show.edituser');
     }
+    public function getUser()
+    {
+        return view('profile.profile');
+    }
 
 }
